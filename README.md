@@ -1,4 +1,4 @@
-# État du projet au 6 décembre
+# État du projet au 7 décembre
 
 Le `JavaProjet` qui vous est fourni, compile et est capable de parser le fichier `test/pass/a00.c`. 
 
