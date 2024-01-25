@@ -11,6 +11,7 @@ public class Sequence extends Tree implements ITree {
 	// CONSTRUCTOR
 
 	public Sequence(ArrayList<Tree> trees) {
+		this.statements = trees ;
 	}
 
 	// PREDICATE
@@ -18,7 +19,11 @@ public class Sequence extends Tree implements ITree {
 	@Override
 	public boolean isEmpty() {
 		// TODO à modifier
-		return false;
+		if ( this.statements == null ) {
+			return true ;
+		} else {
+			return false ;
+		}
 	}
 
 	// PRETTY
@@ -28,10 +33,10 @@ public class Sequence extends Tree implements ITree {
 		String string = new String();
 		for (Tree statement : statements) {
 			// TODO à compléter
+			string += statement.pretty(d);
 		}
 		return string;
 	}
-
 	// CFG (***)
 
 	@Override

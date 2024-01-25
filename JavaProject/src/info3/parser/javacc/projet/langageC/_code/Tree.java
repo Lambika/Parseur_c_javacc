@@ -41,9 +41,14 @@ public class Tree implements ITree {
 
 	String newline(int d) {
 		// TODO à modifier
-		{
-			return null;
+		/*
+		 * { return null; }
+		 */
+		String indent = "";
+		for (int i = 0; i < d; i++) {
+			indent += "    "; // Ajoute 4 espaces pour chaque niveau d'indentation
 		}
+		return indent;
 	}
 
 	public String pretty_with_line_number(int indentation) { // GIVEN

@@ -3,11 +3,13 @@ package info3.parser.javacc.projet.langageC._code;
 import info3.shared.Dot;
 import info3.shared.Format;
 
-public class Return /* ............ */ implements ITree {
+public class Return extends Tree implements ITree {
 
 	/* .......... */
+	Tree expres ;
 
 	public Return(Tree expr) {
+		this.expres = expr ;
 	}
 
 	// PRETTY
@@ -15,9 +17,7 @@ public class Return /* ............ */ implements ITree {
 	@Override
 	public String pretty(int d) {
 		// TODO à modifier
-		{
-			return null;
-		}
+		return newline(d) + Pretty.balanced(format, "return")  + this.expres.pretty(d) + ";" ;
 	}
 
 	// CFG

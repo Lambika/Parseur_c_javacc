@@ -9,6 +9,8 @@ public class Algorithm extends Tree implements ITree {
 	Tree block;
 
 	public Algorithm(String name, Tree body) {
+		this.name = name ;
+		this.block = body ; 
 	}
 
 	// PRETTY
@@ -16,9 +18,9 @@ public class Algorithm extends Tree implements ITree {
 	public String pretty(int d) { // GIVEN
 		String string = new String();
 		string += newline(d);
-		string += Pretty.keyword(d + 1, format, "PROGRAM");
-		string += String.format("(%s)", Pretty.identifier(format, name));
-		string += block.pretty_with_line_number(d + 1);
+		string += Pretty.keyword(d +1, format, "PROGRAM");
+		string += String.format("(%s)", Pretty.identifier(format, name))+Pretty.cro(format, "{")+"\n\t";
+		string +=  block.pretty_with_line_number(d + 1)+Pretty.cro(format, "}")+"\n";
 		return string;
 	}
 

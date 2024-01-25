@@ -1,5 +1,7 @@
 package info3.parser.javacc.projet.langageC._code;
 
+import info3.shared.Format;
+
 public class Ident extends Tree implements ITree {
 
 	String name;
@@ -15,8 +17,8 @@ public class Ident extends Tree implements ITree {
 	@Override
 	public String pretty(int d) {
 		// TODO à modifier
-		{
-			return null;
-		}
+		String string = new String();
+		string += newline(d) + this.name ;
+		return Pretty.value(format, string);
 	}
 }

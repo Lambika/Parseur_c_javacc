@@ -31,7 +31,7 @@ public class Parser {
     //
     String path_file = args[0];
     Algorithm a = from_file(path_file);
-    // a.print();          
+    a.print();          
     // a.toDot("../dot/"); 
     //
     System.out.println("\n");
@@ -72,8 +72,7 @@ TOKEN:
 }
 
 TOKEN:
-{ < STRING : 	// TODO à modifier
-"TODO" /*....................*/ > {  Tracing.token("STRING", image.toString()); }
+{ < STRING : "\""(~["\""])*"\"" > {  Tracing.token("STRING", image.toString()); }
 }
 
 // = KEYWORDS must be defined before IDENTIFIER
@@ -101,7 +100,7 @@ TOKEN: {< #DIGIT: ["0"-"9"] >}
 
 TOKEN:
 { <  INTEGER: 	// TODO à modifier
-<DIGIT>	// TODO à compléter
+(<DIGIT>)+	// TODO à compléter
  > { Tracing.token("INTEGER", image.toString()); }
 }
   
@@ -117,6 +116,7 @@ TOKEN: {< #LOWERCASE: ["a"-"z"] >}
 TOKEN: {< #UPPERCASE: ["A"-"Z"] >}
 
 TOKEN: {< #ANY_IDENT: (<UPPERCASE> | <LOWERCASE> | <DIGIT> | "_")+ >}
+TOKEN: {< #ANY_L: (<UPPERCASE> | <LOWERCASE> |"_")+ >}
 
 TOKEN: {< #FIRST_UNDERSCORE: "_"  (<ANY_IDENT>)* >}
 TOKEN: {< #FIRST_LOW: <LOWERCASE> (<ANY_IDENT>)* >}
@@ -124,6 +124,9 @@ TOKEN: {< #FIRST_UP: <UPPERCASE> (<ANY_IDENT>)* >}
 
 TOKEN:
 { < IDENTIFIER: <ANY_IDENT> > { Tracing.token("IDENTIFIER", image.toString()); }
+}
+TOKEN:
+{ < V: <ANY_L> > { Tracing.token("V", image.toString()); }
 }
 
 
@@ -167,7 +170,7 @@ Tree BLOCK(int d):
   <RBRACE>
     {
       r = new Block(t);
-  	  // Tracing.parsed(d, "BLOCK", r.pretty());
+  	  //Tracing.parsed(d, "BLOCK", r.pretty());
       return r;
     }
 }
@@ -183,10 +186,16 @@ Tree SEQUENCE(int d):
 }
 { 	// TODO à modifier
 
+    (
     t = STATEMENT(d+1)
-  
+    { 
+      if (t != null)
+        trees.add(t);
+    }
+  )*
   
   { return new Sequence(trees); }
+
 }
 
 
@@ -200,18 +209,46 @@ Tree SEQUENCE(int d):
 Tree STATEMENT(int d) :
 {
   Tracing.call(d, "STATEMENT");
-  Tree t,r;
+  Tree t;
+  Tree t2 = null;
+  Tree r;
+  Token token = null;
+  Token token2 = null;
 }
 {
-  	// TODO à modifier
+      // TODO à modifier
+(
+  token = <IDENTIFIER> (
+    (
+	  token2 = <PRE_POST_OP> < SEMICOL >
+	{ return new PostUnop(new Ident(token.toString()), token2.toString()); }) |  
+  (( token2=<ASSIGN> ((< SEMICOL >|(t2 = EXPR(d+1)) <SEMICOL>)|
+  <BOOLEAN><SEMICOL >|
+  ((<LPAR> t2 = EXPR(d+1)(<LBRACKET><IDENTIFIER><RBRACKET>|<RPAR>)) (<RPAR>|<BINOP >|< PRE_POST_OP>)r = EXPR(d+1)<SEMICOL>)))
+  	{ return new Assign(new Ident(token.toString()), t2); }))
+ )
 
-  <IDENTIFIER> <ASSIGN> <INTEGER> <SEMICOL>
-    { return null; }
+| <RETURN> (t = EXPR(d+1)) <SEMICOL>
+  { return new Return(t);}
+| token = < BASIC_TYPE > (t = EXPR(d+1)) (<SEMICOL>|<LBRACKET><IDENTIFIER><RBRACKET><SEMICOL>)
+  { return new Decl(token.toString(),t);}
+	  
+    // TODO à compléter
+| <WHILE> <LPAR> t = EXPR(d+1) <RPAR> r = BLOCK(d+1)
+  { return new While(t,r); } 
+
+ // IFTE (If-Else statement)
+| <IF> <LPAR> t = EXPR(d+1) (<LBRACKET><IDENTIFIER><RBRACKET><RPAR>|<RPAR>) r = BLOCK(d+1) <ELSE> (t2 = BLOCK(d+1))
+  { return new Ifte(t,r,t2); }
+| (<ADDR>|<PTR>) t = EXPR(d+1)
+  { return new Address(t); }
+| <LPAR> t = EXPR(d+1) <RPAR >
+	{ return null; }
+| <LBRACE><RBRACE>
+	{ return null; }
   
-	// TODO à compléter
 
 }
-
 
 // opt_ASSIGNMENT ::= 	// TODO à compléter
 
@@ -219,13 +256,15 @@ Tree STATEMENT(int d) :
 Tree opt_ASSIGNMENT(int d, Tree lhs) :
 {
    Tracing.call(d,"ASSIGNMENT");
-   Tree rhs ;
+   Tree rhs = null;
    Token token;
    Tree r;
 }
 {
- // TODO à modifier
- {return null;}
+ token = <ASSIGN> (rhs = EXPR(d+1)) <SEMICOL>
+ { return new Assign(new Ident(token.toString()), rhs);}
+| token = <PRE_POST_OP> < SEMICOL >
+ { return new Assign(new Ident(token.toString()), rhs);}
 }
 
 
@@ -259,7 +298,7 @@ Tree IFTE(int d) :
 
 // == GIVEN ==
 // EXPR ::= E1 . opt_BINOP_EXPR 
-
+/*
 Tree EXPR(int d) :
 {
   Tracing.call(d, "EXPR");
@@ -270,8 +309,22 @@ Tree EXPR(int d) :
   r = opt_BINOP_EXPR(d+1, t)
     {
  // TODO à modifier
- {return null;}
+ //{return null;}
+ { return r != null ? r : t; }
 }	  
+}*/
+
+Tree EXPR(int d) :
+{
+  Tracing.call(d, "EXPR");
+  Tree t,r;
+}
+{ 
+  t = E1(d+1)
+  r = opt_BINOP_EXPR(d+1, t)
+    {
+      { return r != null ? r : t; }
+    }	  
 }
 
 
@@ -279,7 +332,7 @@ Tree EXPR(int d) :
 // Tree opt_BINOP_EXPR ::=
 //    | BINOP . EXPR
 //    | epsilon
-
+/*
 Tree opt_BINOP_EXPR(int d, Tree left) :
 {
   Tracing.call(d, "opt_BINOP_EXPR");
@@ -291,10 +344,27 @@ Tree opt_BINOP_EXPR(int d, Tree left) :
   right = EXPR(d+1)
     {
  // TODO à modifier
- {return null;}
+   
+ //{return null;}
+  { return new Binop(binop, left, right); }
 } 
-| /*epsilon*/
+| 
     { return left; }     		
+}*/
+
+Tree opt_BINOP_EXPR(int d, Tree left) :
+{
+  Tracing.call(d, "opt_BINOP_EXPR");
+  String binop;
+  Tree right;
+}
+{
+  binop = BINOP(d+1)
+  right = E1(d+1)
+ // { return right != null ? right : left; }
+  { return new Binop(left,binop,right);}
+| /*epsilon*/
+  { return left; }     		   		
 }
 
 
@@ -309,7 +379,11 @@ String BINOP(int d) :
 }
 {
  // TODO à modifier
- {return null;}
+ token = < BINOP >
+ { return token.image; }
+   
+ //{return null;}
+ 	  
 }    
 
 
@@ -339,26 +413,57 @@ Tree VALUE(int d) :
   Tree t;
 }
 {
- // TODO à modifier
- {return null;}
+  //t = <INTEGER>
+  {return null;}
+  
 }
-
-
 
 // E1 ::= 	// TODO à compléter
 
 
 Tree E1(int d) :
 {
-	// TODO à compléter
+	Tracing.call(d, "E1");
+	Token token;
 }
 { 
+	token = <IDENTIFIER> 
+	{ return new Ident(token.toString()); }
+ 
+	| token = <INTEGER>
+	{ return new Ident(token.toString()); }
 
-	// TODO à modifier
- 
-  <TODO_INFO3>
-    { return null; }
- 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

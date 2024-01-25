@@ -21,4 +21,22 @@ public class Cell /* ............ */ implements ITree {
 		}
 	}
 
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String cfg(int src, int tgt, int exit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Tree first_instruction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

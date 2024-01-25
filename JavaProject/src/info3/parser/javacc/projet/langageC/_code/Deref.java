@@ -1,6 +1,8 @@
 package info3.parser.javacc.projet.langageC._code;
 
-public class Deref /* ............ */ implements ITree {
+import info3.shared.Format;
+
+public class Deref extends Tree implements ITree {
 
 	Tree location;
 
@@ -14,7 +16,7 @@ public class Deref /* ............ */ implements ITree {
 		String string = new String();
 		string += Pretty.unop(format, "*");
 		string += location.pretty(d);
-		return string;
+		return Pretty.unop(format, string); 
 	}
 
 }

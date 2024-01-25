@@ -61,6 +61,22 @@ public class Pretty extends Format {
 	public static String type(Format format, String content) {
 		return format.bold(format.color(i_dark_red, content));
 	}
+	
+	public static String op(Format format, String content) {
+		return format.bold(format.color(i_bright_red, content));
+	}
+	
+	public static String ifel(Format format, String content) {
+		return format.bold(format.color(i_dark_green, content));
+	}
+	
+	public static String cro(Format format, String content) {
+		return format.bold(format.color(i_bright_yellow, content));
+	}
+	
+	public static String pa(Format format, String content) {
+		return format.bold(format.color(i_bright_cyan, content));
+	}
 
 	public static String keyword(int depth, Format format, String content) {
 		return format.bold(format.color(color_at_depth(depth), content));
@@ -96,7 +112,7 @@ public class Pretty extends Format {
 	}
 
 	public static String assignment(Format format, String content) {
-		return content;
+		return format.bold(format.color(i_bright_magenta, content));
 	}
 
 	public static String unop(Format format, String content) {
@@ -111,6 +127,7 @@ public class Pretty extends Format {
 	// NEWLINE with INDENTATION
 
 	public static final String newline(int depth, Format format, int line_number) {
+		return null;
 	}
 
 }

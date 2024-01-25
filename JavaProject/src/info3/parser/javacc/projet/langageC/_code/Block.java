@@ -7,6 +7,7 @@ public class Block extends Tree implements ITree {
 	// CONSTRUCTOR
 
 	public Block(Tree t) {
+		this.sequence = t;
 	}
 
 	// PREDICATE
@@ -14,7 +15,7 @@ public class Block extends Tree implements ITree {
 	@Override
 	public boolean isEmpty() {
 		// TODO à modifier
-		return true;
+		return this.sequence == null ;
 	}
 
 	// PRETTY
@@ -23,9 +24,9 @@ public class Block extends Tree implements ITree {
 	public String pretty(int d) {
 		String string = new String();
 		if (sequence.isEmpty()) {
-			// TODO à compléter
+			string += "Empty Sequence";
 		} else {
-			// TODO à compléter
+			string += sequence.pretty(d + 1);
 		}
 		return string;
 	}

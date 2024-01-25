@@ -1,6 +1,8 @@
 package info3.parser.javacc.projet.langageC._code;
 
-public class Decl /* ............ */ implements ITree {
+import info3.shared.Format;
+
+public class Decl extends Tree implements ITree {
 
 	String type;
 	Tree var;
@@ -8,6 +10,8 @@ public class Decl /* ............ */ implements ITree {
 	// CONSTRUCTOR
 
 	public Decl(String type, Tree var) {
+		this.type = type ;
+		this.var = var ; 
 	}
 
 	// PRETTY
@@ -15,9 +19,11 @@ public class Decl /* ............ */ implements ITree {
 	@Override
 	public String pretty(int d) {
 		// TODO à modifier
-		{
-			return null;
-		}
+		String string = new String() ;
+		//string += newline(d);
+		string += "\t\t"+this.type  + this.var.pretty(d);
+		string+=";\n"+newline(d);
+		return Pretty.string(format, string) ;
 	}
 
 	// CFG

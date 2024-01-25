@@ -8,6 +8,8 @@ public class Assign extends Tree implements ITree {
 	// CONSTRUCTOR
 
 	public Assign(Tree lhs, Tree rhs) {
+		this.location = lhs ;
+		this.expression = rhs; 
 	}
 
 	// PRETTY
@@ -15,12 +17,13 @@ public class Assign extends Tree implements ITree {
 	@Override
 	public String pretty(int d) {
 		String string = new String();
-		string += location.pretty(d);
-		string += Pretty.assignment(format, " = ");
-		// TODO à compléter
-
-		string += Pretty.separator(format, ";");
-		return string;
+        string += location.pretty(d); //newline(d)+
+        string += Pretty.assignment(format, " = ");
+        //
+        if(expression != null)
+            string += this.expression.pretty(d); // expression.newline(d) ;
+        string += Pretty.separator(format, ";")+"\n"+newline(d);
+        return string;
 	}
 
 	// CFG

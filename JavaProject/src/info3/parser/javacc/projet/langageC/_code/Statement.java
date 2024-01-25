@@ -1,12 +1,16 @@
 package info3.parser.javacc.projet.langageC._code;
 
-public class Statement /* ............ */ implements ITree {
+public class Statement extends Tree implements ITree {
 
 	/* .......... */
-
+	Tree express ; 
+	
+	
+	
 	// CONSTRUCTOR
 
 	public Statement(Tree expr) {
+		this.express = expr ;
 	}
 
 	// PRETTY
@@ -14,9 +18,7 @@ public class Statement /* ............ */ implements ITree {
 	@Override
 	public String pretty(int d) {
 		// TODO à modifier
-		{
-			return null;
-		}
+		return this.express.pretty(d) + Pretty.cro(format, ";") ;
 	}
 
 	// CFG
