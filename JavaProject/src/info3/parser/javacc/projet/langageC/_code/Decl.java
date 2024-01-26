@@ -13,7 +13,7 @@ public class Decl extends Tree implements ITree {
 		this.type = type ;
 		this.var = var ; 
 	}
-
+ 
 	// PRETTY
 
 	@Override
